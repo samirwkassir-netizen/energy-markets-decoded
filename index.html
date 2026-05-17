@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energy Markets Decoded — Macro Energy Economics Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg-soft: #141414;
+  --bg-card: #1a1a1a;
+  --bg-elevated: #222222;
+  --ink: #f5f0e6;
+  --ink-dim: #a8a39a;
+  --ink-faint: #6b6660;
+  --accent: #ff5722;
+  --accent-glow: rgba(255, 87, 34, 0.15);
+  --green: #4ade80;
+  --amber: #fbbf24;
+  --red: #f87171;
+  --blue: #60a5fa;
+  --purple: #a78bfa;
+  --border: rgba(245, 240, 230, 0.08);
+  --border-strong: rgba(245, 240, 230, 0.18);
+  --serif: 'Fraunces', Georgia, serif;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-weight: 400;
+  line-height: 1.5;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 15% 30%, rgba(255, 87, 34, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(96, 165, 250, 0.03) 0%, transparent 40%);
+  background-attachment: fixed;
+}
+
+.grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.3'/%3E%3C/svg%3E");
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 60px 40px;
+  position: relative;
+  z-index: 2;
+}
+
+/* HEADER */
+header {
+  padding-bottom: 50px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 60px;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: var(--accent);
+}
+
+h1 {
+  font-family: var(--serif);
+  font-size: clamp(48px, 6vw, 84px);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+}
+
+h1 em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink-dim);
+}
+
+.subtitle {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ink-dim);
+  max-width: 720px;
+  margin-bottom: 32px;
+}
+
+.meta {
+  display: flex;
+  gap: 32px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.meta div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meta div::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+/* SECTION HEADERS */
+.section {
+  margin-bottom: 100px;
+  scroll-margin-top: 40px;
+}
+
+.section-header {
+  margin-bottom: 40px;
+}
+
+.section-num {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: 0.2em;
+  margin-bottom: 12px;
+}
+
+h2 {
+  font-family: var(--serif);
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.section-intro {
+  font-size: 17px;
+  color: var(--ink-dim);
+  line-height: 1.6;
+  max-width: 740px;
+}
+
+/* SECTION 1: ENERGY MIX */
+.mix-container {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.mix-visual {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 40px;
+  border-radius: 4px;
+}
+
+.mix-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  justify-content: center;
+}
+
+.mix-bar-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 80px;
+  gap: 16px;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.mix-bar-label {
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mix-bar-track {
+  height: 24px;
+  background: rgba(255, 255, 255, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.mix-bar-fill {
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: width 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.mix-bar-value {
+  color: var(--ink);
+  font-weight: 500;
+  text-align: right;
+}
+
+.mix-text h3 {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.mix-text p {
+  color: var(--ink-dim);
+  margin-bottom: 20px;
+  line-height: 1.7;
+}
+
+.insight-box {
+  background: linear-gradient(135deg, rgba(255, 87, 34, 0.08), rgba(255, 87, 34, 0.02));
+  border-left: 2px solid var(--accent);
+  padding: 20px 24px;
+  margin-top: 24px;
+}
+
+.insight-box .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 8px;
+}
+
+.insight-box p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* SECTION 2: COUNTRY COSTS */
+.cost-controls {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.price-control {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-card);
+  padding: 16px 24px;
+  border: 1px solid var(--border);
+  flex: 1;
+  min-width: 320px;
+}
+
+.price-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.price-input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  background: var(--border-strong);
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--accent);
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--accent);
+  cursor: pointer;
+  border-radius: 50%;
+  border: none;
+}
+
+.price-value {
+  font-family: var(--mono);
+  font-size: 24px;
+  color: var(--accent);
+  font-weight: 500;
+  min-width: 70px;
+  text-align: right;
+}
+
+.country-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.country-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.country-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+.country-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--status-color, var(--ink-faint));
+}
+
+.country-card.profitable::before { background: var(--green); }
+.country-card.tight::before { background: var(--amber); }
+.country-card.loss::before { background: var(--red); }
+
+.country-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 16px;
+}
+
+.country-name {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.country-flag {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  letter-spacing: 0.1em;
+}
+
+.cost-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.cost-line .lbl { color: var(--ink-dim); }
+.cost-line .val { color: var(--ink); font-weight: 500; }
+
+.cost-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 0;
+}
+
+.margin-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 12px;
+}
+
+.margin-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.margin-value {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.margin-value.positive { color: var(--green); }
+.margin-value.warning { color: var(--amber); }
+.margin-value.negative { color: var(--red); }
+
+.margin-status {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-top: 4px;
+}
+
+/* SECTION 3: SUPPLY DEMAND */
+.supply-demand-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 40px;
+  border-radius: 4px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 40px;
+}
+
+.chart-area {
+  position: relative;
+  aspect-ratio: 1.3;
+}
+
+.chart-area svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sd-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.scenario-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scenario-btn {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--border-strong);
+  padding: 16px 20px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--serif);
+  font-size: 14px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.scenario-btn:hover {
+  background: var(--bg-elevated);
+  border-color: var(--ink-faint);
+}
+
+.scenario-btn.active {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+.scenario-btn .num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-faint);
+  letter-spacing: 0.2em;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.scenario-btn.active .num { color: var(--accent); }
+
+.scenario-readout {
+  background: var(--bg-elevated);
+  padding: 20px;
+  border-left: 2px solid var(--accent);
+  min-height: 140px;
+}
+
+.readout-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.readout-title {
+  font-family: var(--serif);
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.readout-desc {
+  font-size: 13px;
+  color: var(--ink-dim);
+  line-height: 1.5;
+}
+
+/* SECTION 4: DATA CENTERS */
+.dc-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.dc-stat-block {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 40px;
+}
+
+.dc-big-number {
+  font-family: var(--serif);
+  font-size: 96px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  background: linear-gradient(135deg, var(--accent), #ff8a65);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+}
+
+.dc-unit {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.dc-context {
+  color: var(--ink-dim);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.dc-context strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.dc-projection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dc-year-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px;
+  align-items: center;
+  gap: 16px;
+}
+
+.dc-year {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--ink-dim);
+  letter-spacing: 0.1em;
+}
+
+.dc-track {
+  height: 28px;
+  background: rgba(255, 255, 255, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.dc-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #ff8a65);
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.dc-twh {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 500;
+  text-align: right;
+}
+
+/* SECTION 5: KEY TAKEAWAYS */
+.takeaways {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.takeaway {
+  padding: 32px 28px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  position: relative;
+}
+
+.takeaway-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  margin-bottom: 16px;
+}
+
+.takeaway h4 {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.takeaway p {
+  color: var(--ink-dim);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* FOOTER */
+footer {
+  margin-top: 100px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  letter-spacing: 0.05em;
+  line-height: 1.8;
+}
+
+footer a {
+  color: var(--ink-dim);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--ink-faint);
+}
+
+.credits {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.credits-left strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .container { padding: 40px 24px; }
+  .mix-container, .supply-demand-wrap, .dc-container {
+    grid-template-columns: 1fr;
+  }
+  .meta { flex-wrap: wrap; gap: 16px; }
+}
+</style>
+</head>
+<body class="grain">
+
+<div class="container">
+
+<header>
+  <div class="eyebrow">Macro Energy Economics</div>
+  <h1>Energy Markets <em>Decoded</em></h1>
+  <p class="subtitle">An interactive exploration of how global energy actually works. Built after attending a Joseph Nehme lecture (HEC Paris) on energy markets, geopolitics, and the macro forces shaping prices in 2026.</p>
+  <div class="meta">
+    <div>Built May 2026</div>
+    <div>Samir Kassir &amp; Julien</div>
+    <div>Data: IEA, IMF, EIA</div>
+  </div>
+</header>
+
+<!-- SECTION 1: ENERGY MIX -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-num">01 / GLOBAL MIX</div>
+    <h2>The world still runs on fossil fuels.</h2>
+    <p class="section-intro">In 2024, despite a decade of headlines about the energy transition, fossil fuels still produced nearly 60% of global electricity. The shift is real, but slow. Here's what the world's grid actually looks like.</p>
+  </div>
+
+  <div class="mix-container">
+    <div class="mix-visual">
+      <div class="mix-bars" id="mixBars"></div>
+    </div>
+    <div class="mix-text">
+      <h3>Coal still leads. Solar grows fastest.</h3>
+      <p>Coal has been the largest single source of electricity for over 50 years. In 2024 it generated 35% of global power. Natural gas holds a steady second place at 22%, a position it has held for two decades.</p>
+      <p>The interesting story is at the bottom. Solar PV grew 33% year-over-year. Wind grew 10%. Renewables together provided one-third of global electricity. For the first time, renewables plus nuclear together covered two-fifths of global generation.</p>
+      <div class="insight-box">
+        <div class="label">The transition reality</div>
+        <p>The IEA projects that in 2025, renewables will overtake coal as the largest source of electricity globally. In 2026, solar and wind each individually surpass nuclear. The transition is real, but coal will still be a major source for years.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: COUNTRY COSTS -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-num">02 / PRODUCTION COSTS</div>
+    <h2>Not all oil is equal.</h2>
+    <p class="section-intro">It costs Saudi Arabia $8 to lift a barrel of oil. It costs a US shale operator $55. Same product, sold at the same global price. This single fact explains most of the geopolitics of oil. Adjust the oil price below to see who profits and who bleeds at different price levels.</p>
+  </div>
+
+  <div class="cost-controls">
+    <div class="price-control">
+      <span class="price-label">Brent Crude Price</span>
+      <div class="price-input-wrap">
+        <input type="range" min="20" max="120" value="75" id="oilPrice" step="1">
+        <span class="price-value">$<span id="priceDisplay">75</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="country-grid" id="countryGrid"></div>
+</section>
+
+<!-- SECTION 3: SUPPLY AND DEMAND -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-num">03 / PRICE FORMATION</div>
+    <h2>How energy prices actually move.</h2>
+    <p class="section-intro">Energy markets are uniquely sensitive to supply shocks because demand is inelastic in the short term. You can't suddenly stop driving or heating your home. So when supply drops, prices spike before demand can adjust. Pick a scenario to see how.</p>
+  </div>
+
+  <div class="supply-demand-wrap">
+    <div class="chart-area">
+      <svg viewBox="0 0 600 460" id="sdChart" xmlns="http://www.w3.org/2000/svg">
+        <!-- Axes -->
+        <line x1="60" y1="400" x2="560" y2="400" stroke="#3a3a3a" stroke-width="1"/>
+        <line x1="60" y1="40" x2="60" y2="400" stroke="#3a3a3a" stroke-width="1"/>
+        
+        <!-- Axis labels -->
+        <text x="310" y="440" fill="#a8a39a" font-family="JetBrains Mono" font-size="11" text-anchor="middle" letter-spacing="2">QUANTITY (MILLIONS OF BARRELS / DAY)</text>
+        <text x="20" y="220" fill="#a8a39a" font-family="JetBrains Mono" font-size="11" text-anchor="middle" letter-spacing="2" transform="rotate(-90, 20, 220)">PRICE ($/BARREL)</text>
+        
+        <!-- Price grid lines -->
+        <line x1="60" y1="100" x2="560" y2="100" stroke="#2a2a2a" stroke-width="1" stroke-dasharray="2,4"/>
+        <line x1="60" y1="200" x2="560" y2="200" stroke="#2a2a2a" stroke-width="1" stroke-dasharray="2,4"/>
+        <line x1="60" y1="300" x2="560" y2="300" stroke="#2a2a2a" stroke-width="1" stroke-dasharray="2,4"/>
+        
+        <text x="55" y="105" fill="#6b6660" font-family="JetBrains Mono" font-size="10" text-anchor="end">$120</text>
+        <text x="55" y="205" fill="#6b6660" font-family="JetBrains Mono" font-size="10" text-anchor="end">$80</text>
+        <text x="55" y="305" fill="#6b6660" font-family="JetBrains Mono" font-size="10" text-anchor="end">$40</text>
+        
+        <!-- Demand curve (downward sloping) -->
+        <line id="demandLine" x1="100" y1="50" x2="500" y2="380" stroke="#60a5fa" stroke-width="2.5"/>
+        <text x="470" y="388" fill="#60a5fa" font-family="JetBrains Mono" font-size="11" font-weight="500">DEMAND</text>
+        
+        <!-- Supply curve (upward sloping) -->
+        <line id="supplyLine" x1="120" y1="380" x2="540" y2="80" stroke="#fbbf24" stroke-width="2.5"/>
+        <text id="supplyLabel" x="510" y="95" fill="#fbbf24" font-family="JetBrains Mono" font-size="11" font-weight="500">SUPPLY</text>
+        
+        <!-- Equilibrium point -->
+        <circle id="eqPoint" cx="305" cy="220" r="6" fill="#ff5722" stroke="#0a0a0a" stroke-width="2"/>
+        <text id="eqLabel" x="320" y="215" fill="#ff5722" font-family="JetBrains Mono" font-size="13" font-weight="700" stroke="#0a0a0a" stroke-width="3" paint-order="stroke">$75 / 100M b/d</text>
+        
+        <!-- Equilibrium guides -->
+        <line id="eqVLine" x1="305" y1="220" x2="305" y2="400" stroke="#ff5722" stroke-width="1" stroke-dasharray="3,4" opacity="0.4"/>
+        <line id="eqHLine" x1="60" y1="220" x2="305" y2="220" stroke="#ff5722" stroke-width="1" stroke-dasharray="3,4" opacity="0.4"/>
+      </svg>
+    </div>
+
+    <div class="sd-controls">
+      <div class="scenario-buttons">
+        <button class="scenario-btn active" data-scenario="baseline">
+          <span class="num">SCENARIO 01</span>
+          Baseline (May 2026)
+        </button>
+        <button class="scenario-btn" data-scenario="supply-shock">
+          <span class="num">SCENARIO 02</span>
+          Supply shock (Iran disruption)
+        </button>
+        <button class="scenario-btn" data-scenario="opec-cut">
+          <span class="num">SCENARIO 03</span>
+          OPEC+ production cut
+        </button>
+        <button class="scenario-btn" data-scenario="recession">
+          <span class="num">SCENARIO 04</span>
+          Global demand collapse
+        </button>
+        <button class="scenario-btn" data-scenario="ev-shift">
+          <span class="num">SCENARIO 05</span>
+          EV adoption accelerates
+        </button>
+      </div>
+
+      <div class="scenario-readout" id="scenarioReadout">
+        <div class="readout-label">CURRENT STATE</div>
+        <div class="readout-title">May 2026 baseline</div>
+        <div class="readout-desc">Brent crude trading around $75 per barrel. Equilibrium reflects current global supply (~100M b/d) meeting global demand. OPEC+ holding production discipline. No major active disruptions.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: DATA CENTERS -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-num">04 / THE NEW DEMAND</div>
+    <h2>Data centers are rewriting demand.</h2>
+    <p class="section-intro">For 50 years, electricity demand growth came from industry, transportation electrification, and air conditioning. AI has added a new driver. Data centers used 415 TWh of electricity in 2024 (1.5% of global consumption). By 2030 the IEA projects 945 TWh, equivalent to Japan's total annual electricity use.</p>
+  </div>
+
+  <div class="dc-container">
+    <div class="dc-stat-block">
+      <div class="dc-big-number">+128%</div>
+      <div class="dc-unit">Projected growth 2024–2030</div>
+      <p class="dc-context">Data center electricity consumption is set to <strong>more than double</strong> in six years. The US and China together account for nearly 80% of the projected growth. In the United States, data centers will consume more electricity for processing data than for the production of <strong>aluminum, steel, cement, chemicals, and all energy-intensive manufacturing combined</strong> by 2030.</p>
+    </div>
+
+    <div class="dc-stat-block">
+      <div class="dc-unit" style="margin-bottom: 32px;">Global data center electricity demand (TWh)</div>
+      <div class="dc-projection" id="dcProjection"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: TAKEAWAYS -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-num">05 / WHAT IT MEANS</div>
+    <h2>Five things worth holding onto.</h2>
+    <p class="section-intro">After a 1.5 hour lecture, four hours of building this, and pulling data from IEA, IMF, EIA, and Lazard, these are the macro forces I'd bet on shaping the next decade of energy markets.</p>
+  </div>
+
+  <div class="takeaways">
+    <div class="takeaway">
+      <div class="takeaway-num">01</div>
+      <h4>The transition is real but slow</h4>
+      <p>Fossil fuels still produced nearly 60% of global electricity in 2024. Solar and wind are growing fast, but coal will be a major source for at least another decade.</p>
+    </div>
+    <div class="takeaway">
+      <div class="takeaway-num">02</div>
+      <h4>Production cost defines power</h4>
+      <p>Saudi Arabia produces oil for under $10 a barrel. The US shale industry needs $55+. This cost gap is why OPEC+ can dictate prices and why every oil shock reshuffles global politics.</p>
+    </div>
+    <div class="takeaway">
+      <div class="takeaway-num">03</div>
+      <h4>Demand is inelastic</h4>
+      <p>You cannot stop driving overnight. You cannot stop heating your home. Short-term energy demand barely responds to price, which is why supply shocks cause price spikes, not gradual adjustments.</p>
+    </div>
+    <div class="takeaway">
+      <div class="takeaway-num">04</div>
+      <h4>AI is the new oil demand</h4>
+      <p>Data centers will add roughly 530 TWh of demand by 2030. That is the equivalent of adding another Japan to the global grid. Power markets, not chip capacity, will be the constraint on AI scaling.</p>
+    </div>
+    <div class="takeaway">
+      <div class="takeaway-num">05</div>
+      <h4>Geopolitics is the wildcard</h4>
+      <p>The 2026 Iran tensions briefly pushed Brent above $75. A real Strait of Hormuz disruption could move prices 50% in a week. Energy markets stay cheap exactly until they don't.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="credits">
+    <div class="credits-left">
+      <strong>Energy Markets Decoded</strong> — Built May 2026 by Samir Kassir &amp; Julien<br>
+      Inspired by a Joseph Nehme lecture (HEC Paris) at Phoenix Institute Beirut, May 7 2026
+    </div>
+    <div>v1.0</div>
+  </div>
+  <div>
+    Data sources: International Energy Agency (IEA) Global Energy Review 2025, Energy &amp; AI Report 2025; International Monetary Fund (IMF) MENA Regional Economic Outlook 2024; US Energy Information Administration (EIA); Lazard LCOE Analysis; Rystad Energy production cost data.
+  </div>
+  <div style="margin-top: 12px; color: var(--ink-faint);">
+    All figures sourced from publicly available data. Scenarios are illustrative models for educational purposes, not market forecasts. This is not investment advice.
+  </div>
+</footer>
+
+</div>
+
+<script>
+// ============ ENERGY MIX DATA ============
+const energyMix = [
+  { name: 'Coal',        pct: 35,  color: '#525252' },
+  { name: 'Natural Gas', pct: 22,  color: '#a16207' },
+  { name: 'Hydro',       pct: 14,  color: '#60a5fa' },
+  { name: 'Nuclear',     pct: 9,   color: '#a78bfa' },
+  { name: 'Wind',        pct: 8,   color: '#4ade80' },
+  { name: 'Solar PV',    pct: 7,   color: '#fbbf24' },
+  { name: 'Bioenergy',   pct: 3,   color: '#84cc16' },
+  { name: 'Oil',         pct: 2,   color: '#ef4444' }
+];
+
+const mixBars = document.getElementById('mixBars');
+const maxPct = Math.max(...energyMix.map(d => d.pct));
+
+energyMix.forEach((source, i) => {
+  const row = document.createElement('div');
+  row.className = 'mix-bar-row';
+  row.innerHTML = `
+    <div class="mix-bar-label">${source.name}</div>
+    <div class="mix-bar-track">
+      <div class="mix-bar-fill" style="background: ${source.color}; width: 0%"></div>
+    </div>
+    <div class="mix-bar-value">${source.pct}%</div>
+  `;
+  mixBars.appendChild(row);
+  
+  setTimeout(() => {
+    row.querySelector('.mix-bar-fill').style.width = `${(source.pct / maxPct) * 100}%`;
+  }, 100 + i * 80);
+});
+
+// ============ COUNTRY COST DATA ============
+const countries = [
+  { name: 'Saudi Arabia',    flag: 'SA', cost: 8,  capacity: 12.3, fiscal: 96 },
+  { name: 'United Arab Emirates', flag: 'AE', cost: 10, capacity: 4.0, fiscal: 70 },
+  { name: 'Iran',            flag: 'IR', cost: 12, capacity: 3.4, fiscal: 65 },
+  { name: 'Iraq',            flag: 'IQ', cost: 13, capacity: 4.5, fiscal: 75 },
+  { name: 'Kuwait',          flag: 'KW', cost: 9,  capacity: 2.8, fiscal: 80 },
+  { name: 'Russia',          flag: 'RU', cost: 20, capacity: 10.5, fiscal: 70 },
+  { name: 'Norway',          flag: 'NO', cost: 27, capacity: 2.0, fiscal: 0 },
+  { name: 'USA (Shale)',     flag: 'US', cost: 55, capacity: 13.0, fiscal: 0 },
+  { name: 'USA (Conventional)', flag: 'US', cost: 35, capacity: 5.5, fiscal: 0 },
+  { name: 'UK (North Sea)',  flag: 'UK', cost: 45, capacity: 1.1, fiscal: 0 },
+  { name: 'Brazil',          flag: 'BR', cost: 40, capacity: 3.3, fiscal: 0 },
+  { name: 'Canada (Oil Sands)', flag: 'CA', cost: 70, capacity: 4.9, fiscal: 0 },
+  { name: 'Venezuela',       flag: 'VE', cost: 50, capacity: 0.7, fiscal: 0 },
+  { name: 'Nigeria',         flag: 'NG', cost: 35, capacity: 1.5, fiscal: 0 }
+];
+
+const countryGrid = document.getElementById('countryGrid');
+
+countries.forEach(c => {
+  const card = document.createElement('div');
+  card.className = 'country-card';
+  card.dataset.cost = c.cost;
+  card.dataset.fiscal = c.fiscal;
+  card.innerHTML = `
+    <div class="country-header">
+      <div class="country-name">${c.name}</div>
+      <div class="country-flag">${c.flag}</div>
+    </div>
+    <div class="cost-line">
+      <span class="lbl">Lift cost / barrel</span>
+      <span class="val">$${c.cost}</span>
+    </div>
+    <div class="cost-line">
+      <span class="lbl">Production capacity</span>
+      <span class="val">${c.capacity}M b/d</span>
+    </div>
+    ${c.fiscal > 0 ? `
+    <div class="cost-line">
+      <span class="lbl">Fiscal breakeven</span>
+      <span class="val">$${c.fiscal}</span>
+    </div>` : ''}
+    <div class="cost-divider"></div>
+    <div class="margin-display">
+      <div>
+        <div class="margin-label">Margin / barrel</div>
+        <div class="margin-status"></div>
+      </div>
+      <div class="margin-value">$0</div>
+    </div>
+  `;
+  countryGrid.appendChild(card);
+});
+
+const priceSlider = document.getElementById('oilPrice');
+const priceDisplay = document.getElementById('priceDisplay');
+
+function updateMargins() {
+  const price = parseInt(priceSlider.value);
+  priceDisplay.textContent = price;
+  
+  document.querySelectorAll('.country-card').forEach(card => {
+    const cost = parseInt(card.dataset.cost);
+    const fiscal = parseInt(card.dataset.fiscal);
+    const margin = price - cost;
+    const marginEl = card.querySelector('.margin-value');
+    const statusEl = card.querySelector('.margin-status');
+    
+    marginEl.textContent = `${margin >= 0 ? '+' : ''}$${margin}`;
+    
+    // Reset classes
+    card.classList.remove('profitable', 'tight', 'loss');
+    marginEl.classList.remove('positive', 'warning', 'negative');
+    
+    if (fiscal > 0 && price < fiscal) {
+      // Country profitable per barrel but government budget needs higher price
+      if (margin > 0) {
+        card.classList.add('tight');
+        marginEl.classList.add('warning');
+        statusEl.textContent = 'Profitable / Budget gap';
+      } else {
+        card.classList.add('loss');
+        marginEl.classList.add('negative');
+        statusEl.textContent = 'Loss-making';
+      }
+    } else if (margin >= 20) {
+      card.classList.add('profitable');
+      marginEl.classList.add('positive');
+      statusEl.textContent = 'Strong margins';
+    } else if (margin > 0) {
+      card.classList.add('tight');
+      marginEl.classList.add('warning');
+      statusEl.textContent = 'Tight margins';
+    } else {
+      card.classList.add('loss');
+      marginEl.classList.add('negative');
+      statusEl.textContent = 'Loss-making';
+    }
+  });
+}
+
+priceSlider.addEventListener('input', updateMargins);
+updateMargins();
+
+// ============ SUPPLY DEMAND CHART ============
+// Baseline curves anchor at: demand (100,50)->(500,380), supply (120,380)->(540,80)
+const scenarios = {
+  baseline: {
+    title: 'May 2026 baseline',
+    label: 'CURRENT STATE',
+    desc: 'Brent crude trading around $75 per barrel. Equilibrium reflects current global supply (~100M b/d) meeting global demand. OPEC+ holding production discipline. No major active disruptions.',
+    supply:  { x1: 120, y1: 380, x2: 540, y2: 80 },
+    demand:  { x1: 100, y1: 50,  x2: 500, y2: 380 },
+    eq: { x: 305, y: 220 },
+    eqLabel: '$75 / 100M b/d',
+    supplyLabel: { x: 510, y: 95 },
+    demandLabel: { x: 470, y: 388 }
+  },
+  'supply-shock': {
+    title: 'Supply shock: Iran disruption',
+    label: 'SUPPLY CURVE LEFT',
+    desc: 'A serious disruption to Iranian or Strait of Hormuz oil flows removes 4-6M b/d from the market. Supply curve shifts left. With inelastic demand, prices spike sharply. October 2024 Middle East tensions briefly pushed Brent above $80; a real Hormuz event could mean $120+.',
+    supply:  { x1: 200, y1: 380, x2: 540, y2: 50 },
+    demand:  { x1: 100, y1: 50,  x2: 500, y2: 380 },
+    eq: { x: 340, y: 140 },
+    eqLabel: '$115 / 92M b/d',
+    supplyLabel: { x: 510, y: 65 },
+    demandLabel: { x: 470, y: 388 }
+  },
+  'opec-cut': {
+    title: 'OPEC+ production cut',
+    label: 'COORDINATED SUPPLY REDUCTION',
+    desc: 'Saudi Arabia and OPEC+ partners cut combined output by 2-3M b/d to defend prices. Supply curve shifts left modestly. Prices rise. Saudi fiscal breakeven (~$96/bbl) means they need elevated prices to balance their budget. This is the post-2023 OPEC+ playbook.',
+    supply:  { x1: 160, y1: 380, x2: 540, y2: 65 },
+    demand:  { x1: 100, y1: 50,  x2: 500, y2: 380 },
+    eq: { x: 322, y: 180 },
+    eqLabel: '$92 / 96M b/d',
+    supplyLabel: { x: 510, y: 80 },
+    demandLabel: { x: 470, y: 388 }
+  },
+  recession: {
+    title: 'Global recession scenario',
+    label: 'DEMAND CURVE LEFT',
+    desc: 'Major economies enter recession. Industrial demand drops, travel falls, manufacturing slows. Demand curve shifts left. Prices fall sharply. The 2020 pandemic saw Brent briefly hit $20. A milder recession could mean $50-55 sustained.',
+    supply:  { x1: 120, y1: 380, x2: 540, y2: 80 },
+    demand:  { x1: 80,  y1: 90,  x2: 400, y2: 380 },
+    eq: { x: 232, y: 290 },
+    eqLabel: '$50 / 88M b/d',
+    supplyLabel: { x: 510, y: 95 },
+    demandLabel: { x: 370, y: 388 }
+  },
+  'ev-shift': {
+    title: 'EV adoption accelerates',
+    label: 'STRUCTURAL DEMAND SHIFT',
+    desc: 'Electric vehicle penetration accelerates faster than IEA base case. Long-term demand curve shifts inward gradually. Oil demand peaks before 2030. The price impact is moderate but lasting. Producers with high lift costs (Canadian oil sands, US shale) face permanent pressure.',
+    supply:  { x1: 120, y1: 380, x2: 540, y2: 80 },
+    demand:  { x1: 90,  y1: 70,  x2: 450, y2: 380 },
+    eq: { x: 263, y: 260 },
+    eqLabel: '$60 / 94M b/d',
+    supplyLabel: { x: 510, y: 95 },
+    demandLabel: { x: 420, y: 388 }
+  }
+};
+
+const supplyLine = document.getElementById('supplyLine');
+const demandLine = document.getElementById('demandLine');
+const supplyLabel = document.getElementById('supplyLabel');
+const demandLabel = document.querySelector('#sdChart text[fill="#60a5fa"]'); // the DEMAND text
+const eqPoint = document.getElementById('eqPoint');
+const eqLabel = document.getElementById('eqLabel');
+const eqVLine = document.getElementById('eqVLine');
+const eqHLine = document.getElementById('eqHLine');
+const readout = document.getElementById('scenarioReadout');
+
+document.querySelectorAll('.scenario-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    const scenario = scenarios[btn.dataset.scenario];
+    
+    // Animate supply line
+    supplyLine.setAttribute('x1', scenario.supply.x1);
+    supplyLine.setAttribute('y1', scenario.supply.y1);
+    supplyLine.setAttribute('x2', scenario.supply.x2);
+    supplyLine.setAttribute('y2', scenario.supply.y2);
+    
+    // Animate demand line
+    demandLine.setAttribute('x1', scenario.demand.x1);
+    demandLine.setAttribute('y1', scenario.demand.y1);
+    demandLine.setAttribute('x2', scenario.demand.x2);
+    demandLine.setAttribute('y2', scenario.demand.y2);
+    
+    // Move labels with lines
+    supplyLabel.setAttribute('x', scenario.supplyLabel.x);
+    supplyLabel.setAttribute('y', scenario.supplyLabel.y);
+    demandLabel.setAttribute('x', scenario.demandLabel.x);
+    demandLabel.setAttribute('y', scenario.demandLabel.y);
+    
+    // Update equilibrium point
+    eqPoint.setAttribute('cx', scenario.eq.x);
+    eqPoint.setAttribute('cy', scenario.eq.y);
+    eqLabel.setAttribute('x', scenario.eq.x + 15);
+    eqLabel.setAttribute('y', scenario.eq.y - 5);
+    eqLabel.textContent = scenario.eqLabel;
+    
+    // Update equilibrium guides
+    eqVLine.setAttribute('x1', scenario.eq.x);
+    eqVLine.setAttribute('y1', scenario.eq.y);
+    eqVLine.setAttribute('x2', scenario.eq.x);
+    eqHLine.setAttribute('y1', scenario.eq.y);
+    eqHLine.setAttribute('y2', scenario.eq.y);
+    eqHLine.setAttribute('x2', scenario.eq.x);
+    
+    // Update readout
+    readout.innerHTML = `
+      <div class="readout-label">${scenario.label}</div>
+      <div class="readout-title">${scenario.title}</div>
+      <div class="readout-desc">${scenario.desc}</div>
+    `;
+  });
+});
+
+// Set transition AFTER initial render
+setTimeout(() => {
+  supplyLine.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+  demandLine.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+  supplyLabel.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+  demandLabel.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+  eqPoint.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+  eqLabel.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+  eqVLine.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+  eqHLine.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+}, 100);
+
+// ============ DATA CENTER PROJECTIONS ============
+const dcData = [
+  { year: '2020', twh: 270 },
+  { year: '2022', twh: 360 },
+  { year: '2024', twh: 415 },
+  { year: '2026', twh: 540 },
+  { year: '2028', twh: 720 },
+  { year: '2030', twh: 945 }
+];
+
+const dcProjection = document.getElementById('dcProjection');
+const maxTwh = 1000;
+
+dcData.forEach((d, i) => {
+  const row = document.createElement('div');
+  row.className = 'dc-year-row';
+  row.innerHTML = `
+    <div class="dc-year">${d.year}</div>
+    <div class="dc-track">
+      <div class="dc-fill" style="width: 0%"></div>
+    </div>
+    <div class="dc-twh">${d.twh} TWh</div>
+  `;
+  dcProjection.appendChild(row);
+  
+  setTimeout(() => {
+    row.querySelector('.dc-fill').style.transition = 'width 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    row.querySelector('.dc-fill').style.width = `${(d.twh / maxTwh) * 100}%`;
+  }, 200 + i * 100);
+});
+</script>
+
+</body>
+</html>
